@@ -5,19 +5,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { RolEntity } from './entities/rol.entity';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import JwtConfig from 'src/config/jwt';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([UserEntity, RolEntity]),
-    JwtModule.registerAsync({
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) =>
-        configService.get<JwtConfig>('jwt').GuardConfig,
-    }),
-  ],
-  controllers: [AuthController],
-  providers: [AuthService],
+	imports: [
+		TypeOrmModule.forFeature([UserEntity, RolEntity]),
+		JwtModule.registerAsync({
+			imports: [ConfigModule],
+			useFactory: (configService: ConfigService) => configService.get<JwtConfig>('jwt').GuardConfig,
+			inject: [ConfigService],
+		}),
+	],
+	controllers: [AuthController],
+	providers: [AuthService],
 })
 export class AuthModule {}

@@ -1,45 +1,51 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import {
-  FastifyAdapter,
-  NestFastifyApplication,
-} from '@nestjs/platform-fastify';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { ValidationPipe } from '@nestjs/common';
-// import generateTypeormConfigFile from './script/generate-typeorm-config-file';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { ConfigKeys } from './config/configuration';
 import GlobalConfig from './config/global';
 
 async function bootstrap() {
-  // define http frameware
-  const app = await NestFactory.create<NestFastifyApplication>(
-    AppModule,
-    new FastifyAdapter(),
-  );
-  // Config
+	// define http frameware
+	const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
+	// Config
 
-  const config = app.get(ConfigService);
+	const config = app.get(ConfigService);
 
-  const { port } = config.get<GlobalConfig>(ConfigKeys.GLOBAL);
+	const { port, name } = config.get<GlobalConfig>(ConfigKeys.GLOBAL);
 
-  // scritps
-  // generateTypeormConfigFile(config);
+	// scritps
+	// generateTypeormConfigFile(config);
 
-  // cors
-  app.enableCors();
+	// cors
+	app.enableCors();
 
-  // prefig
-  app.setGlobalPrefix('v1');
+	// prefig
+	app.setGlobalPrefix('v1');
 
-  // valid
-  app.useGlobalPipes(new ValidationPipe());
+	// valid
+	app.useGlobalPipes(new ValidationPipe());
 
-  //  server
-  await app.listen(port, '0.0.0.0');
+	// swagger
+	const swaggerConfig = new DocumentBuilder()
+		.addBearerAuth()
+		.setTitle(name)
+		.setDescription(`The ${name} API description`)
+		.setVersion('1.0')
+		.addTag(name)
+		.setExternalDoc('Postman Collection', 'api-json')
+		.build();
+	const document = SwaggerModule.createDocument(app, swaggerConfig);
+	SwaggerModule.setup('api', app, document);
 
-  // Bonny
-  console.log(`() ()`);
-  console.log('(°.°) ');
-  console.log('(| |)*');
+	//  Server
+	await app.listen(port, '0.0.0.0');
+
+	// Bonny
+	console.log(`() ()`);
+	console.log('(°.°) ');
+	console.log('(| |)*');
 }
 bootstrap();

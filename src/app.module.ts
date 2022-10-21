@@ -8,29 +8,33 @@ import configuration from './config/configuration';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { SecurityModule } from './common/security/security.module';
+import { MailModule } from './modules/configs/mail/mail.module';
+import { DbModule } from './modules/configs/db/db.module';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      load: [configuration],
-    }),
+	imports: [
+		ConfigModule.forRoot({
+			isGlobal: true,
+			load: [configuration],
+		}),
 
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        ...configService.get<TypeOrmModuleOptions>('db'),
-        synchronize: true,
-      }),
-      inject: [ConfigService],
-    }),
+		TypeOrmModule.forRootAsync({
+			imports: [ConfigModule],
+			useFactory: (configService: ConfigService) => ({
+				...configService.get<TypeOrmModuleOptions>('db'),
+				synchronize: true,
+			}),
+			inject: [ConfigService],
+		}),
 
-    SecurityModule,
-    AuthModule,
-    CategoryModule,
-    ProductModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+		SecurityModule,
+		AuthModule,
+		CategoryModule,
+		ProductModule,
+		MailModule,
+		DbModule,
+	],
+	controllers: [AppController],
+	providers: [AppService],
 })
 export class AppModule {}

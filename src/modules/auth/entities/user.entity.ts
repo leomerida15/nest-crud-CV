@@ -1,32 +1,30 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  Unique,
-} from 'typeorm';
-import { IsEmail, IsString, IsUUID, Matches } from 'class-validator';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { IsBoolean, IsEmail, IsOptional, IsString, IsUUID, Matches } from 'class-validator';
 import { RolEntity } from './rol.entity';
 import configuration from 'src/config/configuration';
 
 @Entity()
 @Unique(['email'])
 export class UserEntity {
-  @PrimaryGeneratedColumn('uuid')
-  @IsUUID()
-  id?: string;
+	@PrimaryGeneratedColumn('uuid')
+	@IsUUID()
+	id?: string;
 
-  @Column()
-  @IsEmail()
-  email: string;
+	@Column()
+	@IsEmail()
+	email: string;
 
-  @Matches(configuration().global.regexPass)
-  @IsString()
-  @Column()
-  password: string;
+	@Matches(configuration().global.regexPass)
+	@IsString()
+	@Column()
+	password: string;
 
-  @ManyToOne(() => RolEntity, (RolEntity) => RolEntity.id)
-  @JoinColumn()
-  rol: string | RolEntity;
+	@Column({ default: false })
+	@IsBoolean()
+	@IsOptional()
+	confirEmail: boolean;
+
+	@ManyToOne(() => RolEntity, (RolEntity) => RolEntity.id)
+	@JoinColumn()
+	rol: string | RolEntity;
 }
