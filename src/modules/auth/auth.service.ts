@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserEditPassDto, UserDto, UserLoginDto } from './dto/user.dto';
+import { UserEditPassDto, UserDto } from './dto/user.dto';
 import { RolEntity } from './entities/rol.entity';
 import { UserEntity } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
@@ -10,12 +10,12 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
 import MailConfig from 'src/config/mail';
 import { JwtData } from 'src/common/decorators/jwt.decorator';
-import { recoverTemplate } from './mails/recover.mail';
-import { confirTemplate } from './mails/confir.mail';
+import { LocalData } from 'src/common/decorators/local.decorator';
+import { ConfigKeys } from 'src/config/configuration';
+import { confirTemplate, recoverTemplate } from './mails/createTemplate';
 
 @Injectable()
 export class AuthService {
-	[x: string]: any;
 	constructor(
 		@InjectRepository(UserEntity)
 		private readonly userRepository: Repository<UserEntity>,
@@ -42,11 +42,11 @@ export class AuthService {
 		});
 
 		const token = this.jwtService.sign({ data: user.id });
-		const url = this.configService.get<MailConfig>('mail').recoverURL(token);
+		const url = this.configService.get<MailConfig>(ConfigKeys.MAIL).recoverURL(token);
 
 		await this.mailerService.sendMail({
 			to: user.email,
-			from: this.configService.get<MailConfig>('mail').user,
+			from: this.configService.get<MailConfig>(ConfigKeys.MAIL).user,
 			subject: 'Confirmation email',
 			html: confirTemplate({ email: user.email, url }),
 		});
@@ -57,7 +57,7 @@ export class AuthService {
 		};
 	}
 
-	public async login({ id, email }: UserLoginDto) {
+	public async login({ id, email }: LocalData) {
 		const payload = { data: id };
 		return {
 			access_token: this.jwtService.sign(payload),
@@ -70,11 +70,11 @@ export class AuthService {
 		if (!user) throw new HttpException('ERROR_TO_REGISTER', HttpStatus.NOT_FOUND);
 
 		const token = this.jwtService.sign({ data: user.id });
-		const url = this.configService.get<MailConfig>('mail').recoverURL(token);
+		const url = this.configService.get<MailConfig>(ConfigKeys.MAIL).recoverURL(token);
 
 		await this.mailerService.sendMail({
 			to: user.email,
-			from: this.configService.get<MailConfig>('mail').user,
+			from: this.configService.get<MailConfig>(ConfigKeys.MAIL).user,
 			subject: 'Recover password',
 			html: recoverTemplate({ email: user.email, url }),
 		});
@@ -87,7 +87,7 @@ export class AuthService {
 		await this.userRepository.update(jwtData.userId, { confirEmail: true });
 	}
 
-	public async edtPass(jwtData: JwtData, { password }: UserEditPassDto) {
+	public async editPass(jwtData: JwtData, { password }: UserEditPassDto) {
 		const user = await this.userRepository.findOneBy({ id: jwtData.userId, confirEmail: false });
 		if (!user) throw new HttpException('NOT_FOUND_USER', HttpStatus.NOT_FOUND);
 

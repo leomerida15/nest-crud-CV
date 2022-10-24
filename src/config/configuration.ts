@@ -6,6 +6,8 @@ import SupabaseConfig from './supabase';
 
 export const enum ConfigKeys {
 	DB = 'db',
+	JWT = 'jwt',
+	MAIL = 'mail',
 	GLOBAL = 'global',
 	SUPABASE = 'supabase',
 }

@@ -1,87 +1,89 @@
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersModule } from '../users/users.module';
-import { AuthService } from './security.service';
-import { jwtConstants } from './constants';
-import { JwtStrategy } from './strategies/jwt.strategy';
-import { LocalStrategy } from './strategies/local.strategy';
+import { SecurityService } from './security.service';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { UserEntity } from 'src/modules/auth/entities/user.entity';
+import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
-describe('AuthService', () => {
-  let service: AuthService;
+const data = {
+	validUser: {
+		prop: { email: 'email', password: 'password' },
+		resp: { id: 'id', email: 'email', confirEmail: false, rol: 'rol' },
+		db: {
+			findOneBy: { id: 'id', email: 'email', password: 'password', confirEmail: false, rol: 'rol' },
+		},
+	},
+};
 
-  beforeEach(async () => {
-    const moduleRef: TestingModule = await Test.createTestingModule({
-      imports: [
-        UsersModule,
-        PassportModule,
-        JwtModule.register({
-          secret: jwtConstants.secret,
-          signOptions: { expiresIn: '60s' },
-        }),
-      ],
-      providers: [AuthService, LocalStrategy, JwtStrategy],
-    }).compile();
-
-    service = moduleRef.get<AuthService>(AuthService);
-  });
-
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-});
+jest.mock('bcrypt', () => ({
+	compareSync: jest.fn(() => true),
+}));
 
 describe('validateUser', () => {
-  let service: AuthService;
+	const userGetRepository = getRepositoryToken(UserEntity);
 
-  beforeEach(async () => {
-    const moduleRef: TestingModule = await Test.createTestingModule({
-      imports: [
-        UsersModule,
-        PassportModule,
-        JwtModule.register({
-          secret: jwtConstants.secret,
-          signOptions: { expiresIn: '60s' },
-        }),
-      ],
-      providers: [AuthService, LocalStrategy, JwtStrategy],
-    }).compile();
+	let securityService: SecurityService;
+	let userRepository: Repository<UserEntity>;
 
-    service = moduleRef.get<AuthService>(AuthService);
-  });
+	beforeEach(async () => {
+		const module: TestingModule = await Test.createTestingModule({
+			providers: [
+				SecurityService,
+				{
+					provide: userGetRepository,
+					useValue: {
+						save: jest.fn(),
+						findOneBy: jest.fn(async () => data.validUser.db.findOneBy),
+						update: jest.fn(),
+					},
+				},
+			],
+		}).compile();
 
-  it('should return a user object when credentials are valid', async () => {
-    const res = await service.validateUser('maria', 'guess');
-    expect(res.userId).toEqual(3);
-  });
+		securityService = module.get<SecurityService>(SecurityService);
+		userRepository = module.get<Repository<UserEntity>>(userGetRepository);
+	});
 
-  it('should return null when credentials are invalid', async () => {
-    const res = await service.validateUser('xxx', 'xxx');
-    expect(res).toBeNull();
-  });
-});
+	//
+	describe('validUser', () => {
+		//
+		describe('🔷 - OK', () => {
+			//
+			it('should return an "🔹 - OK" case', async () => {
+				const { prop, resp } = data.validUser;
 
-describe('validateLogin', () => {
-  let service: AuthService;
+				const result = await securityService.validateUser(prop);
 
-  beforeEach(async () => {
-    const moduleRef: TestingModule = await Test.createTestingModule({
-      imports: [
-        UsersModule,
-        PassportModule,
-        JwtModule.register({
-          secret: jwtConstants.secret,
-          signOptions: { expiresIn: '60s' },
-        }),
-      ],
-      providers: [AuthService, LocalStrategy, JwtStrategy],
-    }).compile();
+				expect(result).toEqual(resp);
+				expect(bcrypt.compareSync).toHaveBeenCalled();
+			});
+		});
+		//
+		describe('🔶 - ERROR', () => {
+			//
+			it('should return an "🔸 - ERROR" case to compareSync return NULL', async () => {
+				jest.spyOn(bcrypt, 'compareSync').mockReturnValue(false);
 
-    service = moduleRef.get<AuthService>(AuthService);
-  });
+				const { prop } = data.validUser;
 
-  it('should return JWT object when credentials are valid', async () => {
-    const res = await service.login({ username: 'maria', userId: 3 });
-    expect(res.access_token).toBeDefined();
-  });
+				const result = await securityService.validateUser(prop);
+
+				expect(result).toBeNull();
+				expect(bcrypt.compareSync).toHaveBeenCalled();
+				expect(userRepository.findOneBy).toHaveBeenCalled();
+			});
+			//
+			it('should return an "🔸 - ERROR" case to findOneBy return NULL', async () => {
+				jest.spyOn(userRepository, 'findOneBy').mockReturnValue(null);
+
+				const { prop } = data.validUser;
+
+				const result = await securityService.validateUser(prop);
+
+				expect(result).toBeNull();
+				expect(bcrypt.compareSync).toHaveBeenCalled();
+				expect(userRepository.findOneBy).toHaveBeenCalled();
+			});
+		});
+	});
 });

@@ -9,23 +9,18 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class SecurityService {
-  constructor(
-    // private readonly usersService: UsersService,
-    // private readonly jwtService: JwtService,
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
-  ) {}
+	constructor(
+		@InjectRepository(UserEntity)
+		private readonly userRepository: Repository<UserEntity>,
+	) {}
 
-  public async validateUser({
-    email,
-    password,
-  }: UserLoginDto): Promise<UserEntity | null> {
-    const user = await this.userRepository.findOneBy({ email });
+	public async validateUser({ email, password }: UserLoginDto): Promise<UserEntity | null> {
+		const user = await this.userRepository.findOneBy({ email });
 
-    if (!user || !bcrypt.compareSync(password, user.password)) return null;
+		if (!user || !bcrypt.compareSync(password, user.password)) return null;
 
-    delete user.password;
+		delete user.password;
 
-    return user;
-  }
+		return user;
+	}
 }
