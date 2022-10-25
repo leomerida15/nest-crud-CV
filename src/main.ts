@@ -45,7 +45,7 @@ async function bootstrap() {
 	SwaggerModule.setup('api', app, document);
 
 	//  Server
-	await app.listen(port, '0.0.0.0');
+	await app.listen(port);
 
 	// Bonny
 	console.log(`() ()`);
