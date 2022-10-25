@@ -21,7 +21,7 @@ export class CategoryService {
 	}
 
 	async findOne(id: string) {
-		return await this.categoryRepository.findOne({ where: { id } });
+		return await this.categoryRepository.findOneBy({ id });
 	}
 
 	async update(id: string, updateCategoryDto: UpdateCategoryDto) {

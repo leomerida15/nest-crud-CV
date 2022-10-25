@@ -13,7 +13,7 @@ import * as bcrypt from 'bcrypt';
 import { LocalData } from 'src/common/decorators/local.decorator';
 import { JwtData } from 'src/common/decorators/jwt.decorator';
 
-export const enum ConfigKeys {
+const enum ConfigKeys {
 	MAIL = 'mail',
 }
 interface data {
