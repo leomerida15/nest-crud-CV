@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import { IsInstance, IsString } from 'class-validator';
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { UserEntity } from './user.entity';
@@ -14,6 +15,7 @@ export class RolEntity extends BaseEntity {
 
 	@Column({ type: 'enum', enum: Rols })
 	@IsString()
+	@Transform(({ value }) => String(value).toLowerCase())
 	name: Rols;
 
 	@OneToMany(() => UserEntity, (UserEntity) => UserEntity.rol)

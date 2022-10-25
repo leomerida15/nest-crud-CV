@@ -1,0 +1,30 @@
+{
+	"material-icon-theme.activeIconPack": "nest",
+	"material-icon-theme.hidesExplorerArrows": false,
+	"material-icon-theme.folders.associations": {
+		"entities": "class",
+		"Schema": "docs",
+		"Schemas": "docs",
+		"schema": "docs",
+		"schemas": "docs",
+		"table": "class",
+		"Entitys": "class",
+		"entity": "class",
+		"entitys": "class",
+		"dto": "interface",
+		"dtos": "interface",
+		"redux": "redux-actions",
+		"state": "redux-store",
+		"decorations": "Functions",
+		"decoration": "Functions",
+		"Decorations": "Functions",
+		"Decoration": "Functions",
+		"decorator": "Functions",
+		"decorators": "Functions",
+		"Decorator": "Functions",
+		"Decorators": "Functions",
+		"publics": "public",
+		"files": "docs",
+		"file": "public"
+	}
+}
