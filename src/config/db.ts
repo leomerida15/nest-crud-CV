@@ -9,6 +9,7 @@ const dbConfig = (): TypeOrmModuleOptions => ({
 	database: process.env.PGDATABASE,
 	autoLoadEntities: true,
 	logging: Boolean(process.env.DB_LOG),
+	ssl: true,
 });
 
 export default dbConfig;
