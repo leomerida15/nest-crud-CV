@@ -32,6 +32,6 @@ export class CreateProductDto {
 	updatedDate?: Date;
 
 	@IsString()
-	@IsOptional()
+	@IsUUID()
 	category: string;
 }
