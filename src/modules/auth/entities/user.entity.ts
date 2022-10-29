@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { IsBoolean, IsEmail, IsOptional, IsString, IsUUID, Matches } from 'class-validator';
 import { RolEntity } from './rol.entity';
-import configuration from 'src/config/configuration';
+import configuration from '../../../config/configuration';
 
 @Entity()
 @Unique(['email'])
