@@ -22,6 +22,9 @@ import { ConfigService } from '@nestjs/config';
 import GlobalConfig from 'src/config/global';
 import { JwtAuthGuard } from 'src/common/security/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { RolAuthGuard } from 'src/common/security/guards/rol-auth.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Rols } from '../auth/entities/rol.entity';
 
 @ApiTags('Category')
 @ApiBearerAuth()
@@ -30,6 +33,8 @@ import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiQuery, ApiTags } from '@
 export class CategoryController {
 	constructor(private readonly categoryService: CategoryService, private readonly configService: ConfigService) {}
 
+	@Roles(Rols.ADMIN)
+	@UseGuards(RolAuthGuard)
 	@Post()
 	@HttpCode(HttpStatus.CREATED)
 	@ApiBody({
@@ -61,12 +66,16 @@ export class CategoryController {
 		return await this.categoryService.findOne(id);
 	}
 
+	@Roles(Rols.ADMIN)
+	@UseGuards(RolAuthGuard)
 	@Put(':id')
 	@HttpCode(HttpStatus.NO_CONTENT)
 	async update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
 		await this.categoryService.update(id, updateCategoryDto);
 	}
 
+	@Roles(Rols.ADMIN)
+	@UseGuards(RolAuthGuard)
 	@Delete(':id')
 	@HttpCode(HttpStatus.NO_CONTENT)
 	async remove(@Param('id') id: string) {
