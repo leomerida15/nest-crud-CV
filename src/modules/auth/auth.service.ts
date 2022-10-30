@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserEditPassDto, UserDto } from './dto/user.dto';
-import { RolEntity } from './entities/rol.entity';
+import { UserDto, UserEditPassDto } from './dto/user.dto';
+import { RolEntity, Rols } from './entities/rol.entity';
 import { UserEntity } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -57,8 +57,8 @@ export class AuthService {
 		};
 	}
 
-	public async login({ id, email }: LocalData) {
-		const payload = { data: id };
+	public async login({ id, email, rol }: LocalData) {
+		const payload = { data: [id, rol.id] };
 		return {
 			access_token: this.jwtService.sign(payload),
 			email,
@@ -92,5 +92,19 @@ export class AuthService {
 		if (!user) throw new HttpException('NOT_FOUND_USER', HttpStatus.NOT_FOUND);
 
 		await this.userRepository.update(jwtData.userId, { password });
+	}
+
+	public async rol() {
+		return await this.rolRepository.find();
+	}
+
+	public async setRol(jwtData: JwtData, rol: Rols) {
+		const rolDB = await this.rolRepository.findOneBy({ name: rol });
+
+		await this.userRepository.update({ id: jwtData.userId }, { rol: rolDB });
+	}
+
+	public async user(jwtData: JwtData) {
+		return await this.userRepository.findOneBy({ id: jwtData.userId });
 	}
 }

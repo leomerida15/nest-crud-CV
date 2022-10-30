@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { UserDto, UserEditPassDto } from './dto/user.dto';
+import { UserDto, UserEditSetRolDto } from './dto/user.dto';
 import { Rols } from './entities/rol.entity';
 import { LocalData } from '../../common/decorators/local.decorator';
 import { JwtData } from 'src/common/decorators/jwt.decorator';
@@ -21,7 +21,7 @@ const AuthLoginData: LocalData = {
 
 const jwtData: JwtData = { userId: 'UUID' };
 
-const editPassData: [JwtData, UserEditPassDto] = [jwtData, { password: 'Test123.' }];
+const editPassData: [JwtData, UserEditSetRolDto] = [jwtData, { password: 'Test123.' }];
 
 describe('AuthController 🔐', () => {
 	let authController: AuthController;

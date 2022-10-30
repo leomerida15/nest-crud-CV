@@ -1,15 +1,10 @@
 import { OmitType, PickType } from '@nestjs/swagger';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsJWT, IsOptional, IsString, IsUUID, Matches } from 'class-validator';
+import { IsEmail, IsEnum, IsJWT, IsString, Matches } from 'class-validator';
 import configuration from 'src/config/configuration';
 import { Rols } from '../entities/rol.entity';
 
 export class UserDto {
-	@IsUUID()
-	@IsOptional()
-	@ApiProperty()
-	id?: string;
-
 	@ApiProperty()
 	@IsEmail()
 	email: string;
@@ -24,11 +19,13 @@ export class UserDto {
 	rol: Rols;
 }
 
-export class UserLoginDto extends OmitType(UserDto, ['rol', 'id'] as const) {}
+export class UserLoginDto extends OmitType(UserDto, ['rol'] as const) {}
 
 export class UserRecoverDto extends PickType(UserDto, ['email'] as const) {}
 
 export class UserEditPassDto extends PickType(UserDto, ['password'] as const) {}
+
+export class UserSetRolDto extends PickType(UserDto, ['rol'] as const) {}
 
 export class AuthRespDto {
 	@ApiProperty()

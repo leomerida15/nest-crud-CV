@@ -15,7 +15,7 @@ export class SecurityService {
 	) {}
 
 	public async validateUser({ email, password }: UserLoginDto): Promise<UserEntity | null> {
-		const user = await this.userRepository.findOneBy({ email });
+		const user = await this.userRepository.findOne({ where: { email }, relations: { rol: true } });
 
 		if (!user || !bcrypt.compareSync(password, user.password)) return null;
 

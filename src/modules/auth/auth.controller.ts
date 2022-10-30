@@ -1,11 +1,12 @@
-import { Body, Controller, HttpCode, Patch, Post, UseGuards, HttpStatus } from '@nestjs/common';
+import { Body, Controller, HttpCode, Patch, Post, UseGuards, HttpStatus, Get } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { JWT, JwtData } from 'src/common/decorators/jwt.decorator';
 import { Local, LocalData } from 'src/common/decorators/local.decorator';
 import { JwtAuthGuard } from 'src/common/security/guards/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/common/security/guards/local-auth.guard';
 import { AuthService } from './auth.service';
-import { AuthRespDto, UserDto, UserEditPassDto, UserLoginDto } from './dto/user.dto';
+import { AuthRespDto, UserDto, UserEditPassDto, UserLoginDto, UserSetRolDto } from './dto/user.dto';
+import { Rols } from './entities/rol.entity';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -65,5 +66,30 @@ export class AuthController {
 	@ApiBearerAuth()
 	async confir(@JWT() jwtData: JwtData) {
 		return await this.authService.confir(jwtData);
+	}
+
+	@Get('rol')
+	@HttpCode(HttpStatus.OK)
+	async rol() {
+		return await this.authService.rol();
+	}
+
+	@Patch('rol')
+	@HttpCode(HttpStatus.OK)
+	@ApiBody({
+		type: UserSetRolDto,
+		enum: Rols,
+	})
+	@ApiBearerAuth()
+	async setRol(@JWT() jwtData: JwtData, @Body() data: UserSetRolDto) {
+		return await this.authService.setRol(jwtData, data.rol);
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Get('user')
+	@HttpCode(HttpStatus.OK)
+	@ApiBearerAuth()
+	async user(@JWT() jwtData: JwtData) {
+		return await this.authService.user(jwtData);
 	}
 }
