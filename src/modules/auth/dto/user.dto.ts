@@ -1,6 +1,6 @@
 import { OmitType, PickType } from '@nestjs/swagger';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsJWT, IsString, Matches } from 'class-validator';
+import { IsBoolean, IsEmail, IsEnum, IsJWT, IsString, Matches } from 'class-validator';
 import configuration from 'src/config/configuration';
 import { Rols } from '../entities/rol.entity';
 
@@ -35,4 +35,8 @@ export class AuthRespDto {
 	@ApiProperty()
 	@IsEmail()
 	email: string;
+
+	@ApiProperty()
+	@IsBoolean()
+	confirEmail: boolean;
 }
