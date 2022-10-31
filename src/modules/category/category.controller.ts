@@ -19,17 +19,18 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CategoryEntity } from './entities/category.entity';
 import { ConfigService } from '@nestjs/config';
-import GlobalConfig from 'src/config/global';
 import { JwtAuthGuard } from 'src/common/security/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { RolAuthGuard } from 'src/common/security/guards/rol-auth.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Rols } from '../auth/entities/rol.entity';
+import { ConfirAuthGuard } from 'src/common/security/guards/confir-auth.guard';
+import GlobalConfig from 'src/config/global';
 
 @ApiTags('Category')
 @ApiBearerAuth()
 @Controller('category')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, ConfirAuthGuard)
 export class CategoryController {
 	constructor(private readonly categoryService: CategoryService, private readonly configService: ConfigService) {}
 

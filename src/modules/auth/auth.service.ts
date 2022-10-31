@@ -54,14 +54,16 @@ export class AuthService {
 		return {
 			access_token: token,
 			email,
+			confirEmail: user.confirEmail,
 		};
 	}
 
-	public async login({ id, email, rol }: LocalData) {
-		const payload = { data: [id, rol.id] };
+	public async login({ id, email, rol, confirEmail }: LocalData) {
+		const payload = { data: [id, rol.id, confirEmail] };
 		return {
 			access_token: this.jwtService.sign(payload),
 			email,
+			confirEmail,
 		};
 	}
 
