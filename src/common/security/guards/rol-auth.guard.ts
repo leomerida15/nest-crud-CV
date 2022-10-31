@@ -16,7 +16,7 @@ export class RolAuthGuard implements CanActivate {
 
 		const rol = this.configService.get<RolsConfig>(ConfigKeys.ROLS)[rolKey];
 
-		const userRolId = context.switchToHttp().getRequest().user[1];
+		const userRolId = context.switchToHttp().getRequest().user.rolId;
 
 		return userRolId === rol;
 	}
