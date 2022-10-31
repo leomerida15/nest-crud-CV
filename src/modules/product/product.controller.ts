@@ -23,11 +23,12 @@ import { ConfigService } from '@nestjs/config';
 import { ProductEntity } from './entities/product.entity';
 import GlobalConfig from 'src/config/global';
 import { JwtAuthGuard } from 'src/common/security/guards/jwt-auth.guard';
+import { ConfirAuthGuard } from 'src/common/security/guards/confir-auth.guard';
 
 @ApiTags('Product')
 @ApiBearerAuth()
 @Controller('product')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, ConfirAuthGuard)
 export class ProductController {
 	constructor(private readonly productService: ProductService, private readonly configService: ConfigService) {}
 

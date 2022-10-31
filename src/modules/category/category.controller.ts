@@ -25,11 +25,12 @@ import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiQuery, ApiTags } from '@
 import { RolAuthGuard } from 'src/common/security/guards/rol-auth.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Rols } from '../auth/entities/rol.entity';
+import { ConfirAuthGuard } from 'src/common/security/guards/confir-auth.guard';
 
 @ApiTags('Category')
 @ApiBearerAuth()
 @Controller('category')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, ConfirAuthGuard)
 export class CategoryController {
 	constructor(private readonly categoryService: CategoryService, private readonly configService: ConfigService) {}
 

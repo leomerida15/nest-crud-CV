@@ -2,7 +2,6 @@ import { Body, Controller, HttpCode, Patch, Post, UseGuards, HttpStatus, Get } f
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { JWT, JwtData } from 'src/common/decorators/jwt.decorator';
 import { Local, LocalData } from 'src/common/decorators/local.decorator';
-import { ConfirAuthGuard } from 'src/common/security/guards/confir-auth.guard';
 import { JwtAuthGuard } from 'src/common/security/guards/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/common/security/guards/local-auth.guard';
 import { AuthService } from './auth.service';
@@ -86,7 +85,7 @@ export class AuthController {
 		return await this.authService.setRol(jwtData, data.rol);
 	}
 
-	@UseGuards(JwtAuthGuard, ConfirAuthGuard)
+	@UseGuards(JwtAuthGuard)
 	@Get('user')
 	@HttpCode(HttpStatus.OK)
 	@ApiBearerAuth()
