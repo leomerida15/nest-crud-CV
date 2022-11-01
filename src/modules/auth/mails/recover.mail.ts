@@ -14,7 +14,7 @@ export const recoverTemplate = ({ email, url }: { email: string; url: string }) 
                 <div style="border-bottom: 1px solid #f2f3f5">
                     <h2>Hello ${email}</h2>
                     <p style="font-size: 14px; outline: 0; text-align: justify;font-family: 'Roboto', sans-serif">
-                        Make click in the button to recover your password
+                        Make click in the button to confir your email
                     </p>
                 </div>
                 <p style="font-size: 14px; outline: 0; text-align: justify;font-family: 'Roboto', sans-serif">
