@@ -42,7 +42,7 @@ export class AuthService {
 		});
 
 		const token = this.jwtService.sign({ data: user.id });
-		const url = this.configService.get<MailConfig>(ConfigKeys.MAIL).recoverURL(token);
+		const url = this.configService.get<MailConfig>(ConfigKeys.MAIL).confirmationURL(user.id);
 
 		await this.mailerService.sendMail({
 			to: user.email,
@@ -98,7 +98,7 @@ export class AuthService {
 			to: user.email,
 			from: this.configService.get<MailConfig>(ConfigKeys.MAIL).user,
 			subject: 'Recover password',
-			html: recoverTemplate({ email: user.email, url }),
+			html: confirTemplate({ email: user.email, url }),
 		});
 	}
 
