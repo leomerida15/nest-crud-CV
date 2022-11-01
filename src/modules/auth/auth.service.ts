@@ -71,8 +71,7 @@ export class AuthService {
 		const user = await this.userRepository.findOneBy({ email });
 		if (!user) throw new HttpException('ERROR_TO_REGISTER', HttpStatus.NOT_FOUND);
 
-		const token = this.jwtService.sign({ data: user.id });
-		const url = this.configService.get<MailConfig>(ConfigKeys.MAIL).recoverURL(token);
+		const url = this.configService.get<MailConfig>(ConfigKeys.MAIL).recoverURL(user.id);
 
 		await this.mailerService.sendMail({
 			to: user.email,
@@ -80,14 +79,20 @@ export class AuthService {
 			subject: 'Recover password',
 			html: recoverTemplate({ email: user.email, url }),
 		});
+	}
+
+	public async editPass(userId: string, { password }: UserEditPassDto) {
+		const user = await this.userRepository.findOneBy({ id: userId, confirEmail: false });
+		if (!user) throw new HttpException('NOT_FOUND_USER', HttpStatus.NOT_FOUND);
+
+		await this.userRepository.update(userId, { password });
 	}
 
 	public async reconfir({ email }: UserRecoverDto) {
 		const user = await this.userRepository.findOneBy({ email });
 		if (!user) throw new HttpException('ERROR_TO_REGISTER', HttpStatus.NOT_FOUND);
 
-		const token = this.jwtService.sign({ data: user.id });
-		const url = this.configService.get<MailConfig>(ConfigKeys.MAIL).recoverURL(token);
+		const url = this.configService.get<MailConfig>(ConfigKeys.MAIL).confirmationURL(user.id);
 
 		await this.mailerService.sendMail({
 			to: user.email,
@@ -97,18 +102,11 @@ export class AuthService {
 		});
 	}
 
-	public async confir(jwtData: JwtData) {
-		const user = await this.userRepository.findOneBy({ id: jwtData.userId, confirEmail: false });
+	public async confir(userId: string) {
+		const user = await this.userRepository.findOneBy({ id: userId, confirEmail: false });
 		if (!user) throw new HttpException('ERROR_TO_REGISTER', HttpStatus.NOT_FOUND);
 
-		await this.userRepository.update(jwtData.userId, { confirEmail: true });
-	}
-
-	public async editPass(jwtData: JwtData, { password }: UserEditPassDto) {
-		const user = await this.userRepository.findOneBy({ id: jwtData.userId, confirEmail: false });
-		if (!user) throw new HttpException('NOT_FOUND_USER', HttpStatus.NOT_FOUND);
-
-		await this.userRepository.update(jwtData.userId, { password });
+		await this.userRepository.update(userId, { confirEmail: true });
 	}
 
 	public async rol() {
