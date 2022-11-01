@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserDto, UserEditPassDto } from './dto/user.dto';
+import { UserDto, UserEditPassDto, UserRecoverDto } from './dto/user.dto';
 import { RolEntity, Rols } from './entities/rol.entity';
 import { UserEntity } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
@@ -67,8 +67,23 @@ export class AuthService {
 		};
 	}
 
-	public async recover(jwtData: JwtData) {
-		const user = await this.userRepository.findOneBy({ id: jwtData.userId });
+	public async recover({ email }: UserRecoverDto) {
+		const user = await this.userRepository.findOneBy({ email });
+		if (!user) throw new HttpException('ERROR_TO_REGISTER', HttpStatus.NOT_FOUND);
+
+		const token = this.jwtService.sign({ data: user.id });
+		const url = this.configService.get<MailConfig>(ConfigKeys.MAIL).recoverURL(token);
+
+		await this.mailerService.sendMail({
+			to: user.email,
+			from: this.configService.get<MailConfig>(ConfigKeys.MAIL).user,
+			subject: 'Recover password',
+			html: recoverTemplate({ email: user.email, url }),
+		});
+	}
+
+	public async reconfir({ email }: UserRecoverDto) {
+		const user = await this.userRepository.findOneBy({ email });
 		if (!user) throw new HttpException('ERROR_TO_REGISTER', HttpStatus.NOT_FOUND);
 
 		const token = this.jwtService.sign({ data: user.id });

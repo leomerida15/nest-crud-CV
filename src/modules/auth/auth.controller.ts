@@ -5,7 +5,7 @@ import { Local, LocalData } from 'src/common/decorators/local.decorator';
 import { JwtAuthGuard } from 'src/common/security/guards/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/common/security/guards/local-auth.guard';
 import { AuthService } from './auth.service';
-import { AuthRespDto, UserDto, UserEditPassDto, UserLoginDto, UserSetRolDto } from './dto/user.dto';
+import { AuthRespDto, UserDto, UserEditPassDto, UserLoginDto, UserRecoverDto, UserSetRolDto } from './dto/user.dto';
 import { Rols } from './entities/rol.entity';
 
 @ApiTags('auth')
@@ -38,12 +38,13 @@ export class AuthController {
 		return await this.authService.login(localData);
 	}
 
-	@UseGuards(JwtAuthGuard)
 	@Post('recover')
 	@HttpCode(HttpStatus.NO_CONTENT)
-	@ApiBearerAuth()
-	async recover(@JWT() jwtData: JwtData) {
-		return await this.authService.recover(jwtData);
+	@ApiBody({
+		type: UserRecoverDto,
+	})
+	async recover(@Body() body: UserRecoverDto) {
+		return await this.authService.recover(body);
 	}
 
 	@UseGuards(JwtAuthGuard)
@@ -66,6 +67,15 @@ export class AuthController {
 	@ApiBearerAuth()
 	async confir(@JWT() jwtData: JwtData) {
 		return await this.authService.confir(jwtData);
+	}
+
+	@Post('reconfir')
+	@HttpCode(HttpStatus.NO_CONTENT)
+	@ApiBody({
+		type: UserRecoverDto,
+	})
+	async reconfir(@Body() body: UserRecoverDto) {
+		return await this.authService.reconfir(body);
 	}
 
 	@Get('rol')
