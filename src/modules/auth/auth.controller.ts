@@ -63,7 +63,7 @@ export class AuthController {
 		return await this.authService.editPass(userId, data);
 	}
 
-	@Patch('confir')
+	@Patch('confir/:userId')
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ApiParam({
 		name: 'userId',
