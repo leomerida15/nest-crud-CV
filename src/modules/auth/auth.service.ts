@@ -103,8 +103,8 @@ export class AuthService {
 	}
 
 	public async confir(userId: string) {
-		const user = await this.userRepository.findOneBy({ id: userId, confirEmail: false });
-		if (!user) throw new HttpException('ERROR_TO_REGISTER', HttpStatus.NOT_FOUND);
+		const user = await this.userRepository.findOneBy({ id: userId });
+		if (!user) throw new HttpException('USER_NOT_FINE', HttpStatus.NOT_FOUND);
 
 		await this.userRepository.update(userId, { confirEmail: true });
 	}
