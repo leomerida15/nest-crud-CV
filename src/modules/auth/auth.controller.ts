@@ -1,5 +1,5 @@
-import { Body, Controller, HttpCode, Patch, Post, UseGuards, HttpStatus, Get } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, HttpCode, Patch, Post, UseGuards, HttpStatus, Get, Param } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import { JWT, JwtData } from 'src/common/decorators/jwt.decorator';
 import { Local, LocalData } from 'src/common/decorators/local.decorator';
 import { JwtAuthGuard } from 'src/common/security/guards/jwt-auth.guard';
@@ -47,26 +47,30 @@ export class AuthController {
 		return await this.authService.recover(body);
 	}
 
-	@UseGuards(JwtAuthGuard)
-	@Patch('recover')
+	@Patch('recover/:userId')
 	@HttpCode(HttpStatus.NO_CONTENT)
-	@ApiBearerAuth()
+	@ApiParam({
+		name: 'userId',
+		type: 'UUID',
+	})
 	@ApiBody({
 		type: UserEditPassDto,
 	})
 	@ApiCreatedResponse({
 		type: AuthRespDto,
 	})
-	async editPass(@JWT() jwtData: JwtData, @Body() data: UserEditPassDto) {
-		return await this.authService.editPass(jwtData, data);
+	async editPass(@Param('userId') userId: string, @Body() data: UserEditPassDto) {
+		return await this.authService.editPass(userId, data);
 	}
 
-	@UseGuards(JwtAuthGuard)
-	@Patch('confir')
+ 	@Patch('confir')
 	@HttpCode(HttpStatus.NO_CONTENT)
-	@ApiBearerAuth()
-	async confir(@JWT() jwtData: JwtData) {
-		return await this.authService.confir(jwtData);
+	@ApiParam({
+		name: 'userId',
+		type: 'UUID',
+	})
+	async confir(@Param('userId') userId: string) {
+		return await this.authService.confir(userId);
 	}
 
 	@Post('reconfir')
