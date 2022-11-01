@@ -51,7 +51,7 @@ export class AuthController {
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ApiParam({
 		name: 'userId',
-		type: 'UUID',
+		type: 'string',
 	})
 	@ApiBody({
 		type: UserEditPassDto,
@@ -67,7 +67,7 @@ export class AuthController {
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ApiParam({
 		name: 'userId',
-		type: 'UUID',
+		type: 'string',
 	})
 	async confir(@Param('userId') userId: string) {
 		return await this.authService.confir(userId);
