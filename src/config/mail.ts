@@ -3,5 +3,5 @@ export default class MailConfig {
 	pass: string = process.env.MAIL_PASS;
 
 	recoverURL = (token: string) => `${process.env.HOST}/auth/recover/${token}`;
-	confirmationURL = (token: string) => `${process.env.HOST}/auth/confirmation/${token}`;
+	confirmationURL = (token: string) => `${process.env.HOST}/auth/confir/${token}`;
 }
