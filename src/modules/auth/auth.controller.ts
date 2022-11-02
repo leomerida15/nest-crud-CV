@@ -63,11 +63,14 @@ export class AuthController {
 		return await this.authService.editPass(userId, data);
 	}
 
-	@Patch('confir/:userId')
+	@Post('confir/:userId')
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ApiParam({
 		name: 'userId',
 		type: 'string',
+	})
+	@ApiCreatedResponse({
+		type: AuthRespDto,
 	})
 	async confir(@Param('userId') userId: string) {
 		return await this.authService.confir(userId);
