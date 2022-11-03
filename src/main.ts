@@ -10,7 +10,12 @@ import GlobalConfig from './config/global';
 
 async function bootstrap() {
 	// define http frameware
-	const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
+	const app = await NestFactory.create<NestFastifyApplication>(
+		AppModule,
+		new FastifyAdapter({
+			logger: true,
+		}),
+	);
 
 	// Multer
 	await app.register(contentParser);
