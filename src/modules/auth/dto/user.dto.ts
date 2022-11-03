@@ -1,8 +1,14 @@
 import { OmitType, PickType } from '@nestjs/swagger';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsEmail, IsEnum, IsJWT, IsString, Matches } from 'class-validator';
+import { IsBoolean, IsEmail, IsEnum, IsJWT, IsString, IsUUID, Matches } from 'class-validator';
 import configuration from 'src/config/configuration';
 import { Rols } from '../entities/rol.entity';
+
+export class UserConfirDto {
+	@ApiProperty()
+	@IsUUID()
+	userId: string;
+}
 
 export class UserDto {
 	@ApiProperty()
