@@ -103,8 +103,13 @@ export class AuthService {
 	}
 
 	public async confir(userId: string) {
+		console.log(`confir service`);
+		console.log('userId', userId);
+
 		const user = await this.userRepository.findOne({ where: { id: userId }, relations: { rol: true } });
 		if (!user) throw new HttpException('USER_NOT_FIND', HttpStatus.NOT_FOUND);
+
+		console.log('user', user);
 
 		await this.userRepository.update(userId, { confirEmail: true });
 
@@ -112,7 +117,11 @@ export class AuthService {
 
 		const rol = user.rol as RolEntity;
 
+		console.log('rol', rol);
+
 		const payload = { data: [id, rol.id, confirEmail] };
+
+		console.log('payload', payload);
 
 		return {
 			access_token: this.jwtService.sign(payload),

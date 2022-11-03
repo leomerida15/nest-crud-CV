@@ -73,6 +73,9 @@ export class AuthController {
 		type: AuthRespDto,
 	})
 	async confir(@Param('userId') userId: string) {
+		console.clear();
+		console.log('confir/:userId');
+
 		return await this.authService.confir(userId);
 	}
 
@@ -84,7 +87,7 @@ export class AuthController {
 	async reconfir(@Body() body: UserRecoverDto) {
 		return await this.authService.reconfir(body);
 	}
- 
+
 	@Get('rol')
 	@HttpCode(HttpStatus.OK)
 	async rol() {
