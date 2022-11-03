@@ -84,7 +84,7 @@ export class AuthController {
 	async reconfir(@Body() body: UserRecoverDto) {
 		return await this.authService.reconfir(body);
 	}
-
+ 
 	@Get('rol')
 	@HttpCode(HttpStatus.OK)
 	async rol() {

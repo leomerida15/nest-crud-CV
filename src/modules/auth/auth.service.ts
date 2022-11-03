@@ -104,7 +104,7 @@ export class AuthService {
 
 	public async confir(userId: string) {
 		const user = await this.userRepository.findOne({ where: { id: userId }, relations: { rol: true } });
-		if (!user) throw new HttpException('USER_NOT_FINE', HttpStatus.NOT_FOUND);
+		if (!user) throw new HttpException('USER_NOT_FIND', HttpStatus.NOT_FOUND);
 
 		await this.userRepository.update(userId, { confirEmail: true });
 
