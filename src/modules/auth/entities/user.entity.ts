@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { Column, Entity, Generated, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { IsBoolean, IsEmail, IsOptional, IsString, IsUUID, Matches } from 'class-validator';
 import { RolEntity } from './rol.entity';
 import configuration from '../../../config/configuration';
@@ -23,6 +23,11 @@ export class UserEntity {
 	@IsBoolean()
 	@IsOptional()
 	confirEmail: boolean;
+
+	@Column()
+	@Generated('uuid')
+	@IsUUID()
+	refToken?: string;
 
 	@ManyToOne(() => RolEntity, (RolEntity) => RolEntity.id)
 	@JoinColumn()

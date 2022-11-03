@@ -63,8 +63,8 @@ export class AuthController {
 		return await this.authService.editPass(userId, data);
 	}
 
-	@Post('confir/:userId')
-	@HttpCode(HttpStatus.NO_CONTENT)
+	@Patch('confir/:userId')
+	@HttpCode(HttpStatus.OK)
 	@ApiParam({
 		name: 'userId',
 		type: 'string',
@@ -76,7 +76,11 @@ export class AuthController {
 		console.clear();
 		console.log('confir/:userId');
 
-		return await this.authService.confir(userId);
+		const info = await this.authService.confir(userId);
+
+		console.log('confir/:userId');
+
+		return info;
 	}
 
 	@Post('reconfir')
