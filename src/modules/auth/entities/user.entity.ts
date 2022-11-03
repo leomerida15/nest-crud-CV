@@ -24,11 +24,6 @@ export class UserEntity {
 	@IsOptional()
 	confirEmail: boolean;
 
-	@Column()
-	@Generated('uuid')
-	@IsUUID()
-	refToken?: string;
-
 	@ManyToOne(() => RolEntity, (RolEntity) => RolEntity.id)
 	@JoinColumn()
 	rol: string | RolEntity;
