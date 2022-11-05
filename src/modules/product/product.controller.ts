@@ -41,6 +41,9 @@ export class ProductController {
 		type: CreateProductDto,
 	})
 	async create(@Body() createProductDto: CreateProductDto) {
+		console.clear();
+		console.log('create category');
+
 		return await this.productService.create(createProductDto);
 	}
 
