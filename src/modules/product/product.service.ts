@@ -14,7 +14,6 @@ export class ProductService {
 	) {}
 
 	async create(createProductDto: CreateProductDto) {
-		console.log('data createProductDto', createProductDto);
 		return await this.productRepository.save(createProductDto);
 	}
 
