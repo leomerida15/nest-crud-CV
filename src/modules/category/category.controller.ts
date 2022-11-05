@@ -45,6 +45,8 @@ export class CategoryController {
 		type: CreateCategoryDto,
 	})
 	async create(@Body() createCategoryDto: CreateCategoryDto) {
+		console.clear();
+		console.log('create category', createCategoryDto);
 		return await this.categoryService.create(createCategoryDto);
 	}
 

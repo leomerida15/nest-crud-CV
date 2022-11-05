@@ -13,6 +13,8 @@ export class CategoryService {
 	) {}
 
 	async create(createCategoryDto: CreateCategoryDto) {
+		console.log('data createCategoryDto', createCategoryDto);
+
 		return await this.categoryRepository.save(createCategoryDto);
 	}
 
